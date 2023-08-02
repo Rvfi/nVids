@@ -50,8 +50,12 @@ ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art
     [t3]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-320:text='Do not redistribute.'[t4]; \
     [t4]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-290:textfile=lufs.txt:reload=1[t5]; \
     [t5]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-260:textfile=peak.txt:reload=1[t6]; \
-    [t6]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-230:text='%{pts\:hms}'" \
-    -c:v libx264 -b:v 1M -pix_fmt yuv420p -c:a aac -b:a 128k -shortest "$output_file"
+    [t6]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-230:text='%{pts\:hms}'[t7]; \
+    [1:a]showwaves=s=160x60:mode=line:colors=white[waves]; \
+    [t7][waves]overlay=10:H-h-160" \
+    -c:v libx264 -b:v 500k -pix_fmt yuv420p -c:a aac -b:a 64k -shortest "$output_file"
+
+
     
 # Cleanup the text files
 rm lufs.txt peak.txt album_art.png
