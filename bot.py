@@ -20,9 +20,7 @@ async def on_message(message):
 
     if message.attachments:
         # Check if the attachment is not an audio file
-        # .wav, .mp3, .ogg
-        # https://www.reddit.com/r/discordapp/comments/f2kt5r/guide_file_formats_discord_can_embed/
-        if not message.attachments[0].filename.endswith(('.wav', '.mp3', '.ogg')):
+        if not message.attachments[0].filename.endswith(('.wav', '.mp3', '.ogg', '.m4a')):
             return
 
         print("Processing command received.")
