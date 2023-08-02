@@ -20,24 +20,25 @@ async def on_message(message):
 
     if message.content.startswith('!process') and message.attachments:
         print("Processing command received.")
-        for attachment in message.attachments:
-            print(f"Downloading attachment: {attachment.filename}")
-            await attachment.save(attachment.filename)
-            
-            # Execute the script
-            cmd = f"./aqvm.sh {attachment.filename} LogoMarkWhite.png InterV.var.ttf"
-            print(f"Running command: {cmd}")
-            process = subprocess.Popen(cmd, shell=True)
-            process.wait()
+        async with message.channel.typing():
+            for attachment in message.attachments:
+                print(f"Downloading attachment: {attachment.filename}")
+                await attachment.save(attachment.filename)
+                
+                # Execute the script
+                cmd = f"./aqvm.sh {attachment.filename} LogoMarkWhite.png InterV.var.ttf"
+                print(f"Running command: {cmd}")
+                process = subprocess.Popen(cmd, shell=True)
+                process.wait()
 
-            # Sends the output video back into the chat
-            print("Sending output video.")
-            await message.channel.send(file=discord.File('output.mp4'))
+                # Sends the output video back into the chat
+                print("Sending output video.")
+                await message.channel.send(file=discord.File('output.mp4'))
 
-            # Delete the files after processing
-            print("Deleting files.")
-            os.remove(attachment.filename)
-            os.remove("output.mp4")
+                # Delete the files after processing
+                print("Deleting files.")
+                os.remove(attachment.filename)
+                os.remove("output.mp4")
 
 
 bot.run(os.getenv('TOKEN'))
