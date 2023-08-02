@@ -34,5 +34,10 @@ async def on_message(message):
             print("Sending output video.")
             await message.channel.send(file=discord.File('output.mp4'))
 
+            # Delete the files after processing
+            print("Deleting files.")
+            os.remove(attachment.filename)
+            os.remove("output.mp4")
+
 
 bot.run(os.getenv('TOKEN'))
