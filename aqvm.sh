@@ -39,7 +39,7 @@ peak=$(ffmpeg -i "$audio_file" -filter:a volumedetect -f null /dev/null 2>&1 | g
 echo "Integrated Loudness: $lufs LUFS" > lufs.txt
 echo "Peak dB: $peak dB" > peak.txt
 
-ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art.png -filter_complex "\
+ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art.png -i measurements.png -filter_complex "\
     [3:v]scale=480:480[bg]; \
     [2:v]scale=480:480[gradient]; \
     [bg][gradient]overlay[bg1]; \
@@ -52,11 +52,14 @@ ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art
     [t5]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-260:textfile=peak.txt:reload=1[t6]; \
     [t6]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-230:text='%{pts\:hms}'[t7]; \
     [1:a]showwaves=s=160x60:mode=line:colors=white[waves]; \
-    [1:a]showvolume=w=150:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=2:m=p:c='0x80808080'[peakmeter]; \
+    [1:a]showvolume=w=300:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=2:m=p:c='0x80808080'[peakmeter]; \
     [1:a]showvolume=w=150:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=0:m=r:c='0xffffffff'[rmsmeter]; \
+    [peakmeter]crop=iw:150:0:0[peakmeter]; \
     [t7][waves]overlay=10:H-h-160[t8]; \
     [t8][peakmeter]overlay=10:H-h-10[t9]; \
-    [t9][rmsmeter]overlay=10:H-h-10" \
+    [t9][rmsmeter]overlay=10:H-h-10[t10]; \
+    [4:v]scale=29x155[measurements]; \
+    [t10][measurements]overlay=40:H-h-10" \
     -c:v libx264 -b:v 500k -pix_fmt yuv420p -c:a aac -b:a 64k -shortest "$output_file"
 
 
