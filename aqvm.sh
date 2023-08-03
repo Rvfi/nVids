@@ -66,7 +66,7 @@ ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art
     [t9][rmsmeter]overlay=10:H-h-10[t10]; \
     [4:v]scale=29x155[measurements]; \
     [t10][measurements]overlay=40:H-h-10" \
-    -c:v libx264 -b:v 500k -pix_fmt yuv420p -c:a aac -b:a 64k -shortest "$output_file"
+    -c:v libx264 -b:v 500k -pix_fmt yuv420p -c:a aac -b:a 96k -shortest "$output_file"
 
 
     
