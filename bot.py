@@ -30,7 +30,7 @@ async def on_message(message):
                 await attachment.save(attachment.filename)
                 
                 # Execute the script
-                cmd = f"./aqvm.sh {attachment.filename} LogoMarkWhite.png InterV.var.ttf"
+                cmd = f"./aqvm.sh {attachment.filename} LogoMarkWhite.png"
                 print(f"Running command: {cmd}")
                 process = subprocess.Popen(cmd, shell=True)
                 process.wait()

@@ -6,13 +6,12 @@ if ! command -v ffmpeg &> /dev/null || ! command -v ffprobe &> /dev/null; then
 fi
 
 if [ "$#" -ne 3 ]; then
-    echo "Usage: $0 [audio_file] [logo_image] [font_file]"
+    echo "Usage: $0 [audio_file] [logo_image]"
     exit
 fi
 
 audio_file="$1"
 logo_image="$2"
-font_file="$3"
 output_file="output.mp4"
 
 title=$(ffprobe -loglevel error -show_entries format_tags=title -of default=nw=1:nk=1 "$audio_file")
