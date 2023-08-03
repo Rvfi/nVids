@@ -52,7 +52,11 @@ ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art
     [t5]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-260:textfile=peak.txt:reload=1[t6]; \
     [t6]drawtext=fontfile=$font_file:fontsize=18:fontcolor=white:x=10:y=h-230:text='%{pts\:hms}'[t7]; \
     [1:a]showwaves=s=160x60:mode=line:colors=white[waves]; \
-    [t7][waves]overlay=10:H-h-160" \
+    [1:a]showvolume=w=150:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=2:m=p:c='0x80808080'[peakmeter]; \
+    [1:a]showvolume=w=150:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=0:m=r:c='0xffffffff'[rmsmeter]; \
+    [t7][waves]overlay=10:H-h-160[t8]; \
+    [t8][peakmeter]overlay=10:H-h-10[t9]; \
+    [t9][rmsmeter]overlay=10:H-h-10" \
     -c:v libx264 -b:v 500k -pix_fmt yuv420p -c:a aac -b:a 64k -shortest "$output_file"
 
 
