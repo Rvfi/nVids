@@ -57,7 +57,7 @@ ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art
     [0:v]scale=iw*0.2:ih*0.2[logo]; \
     [bg1][logo]overlay=10:10[t1]; \
     [t1]subtitles=text.srt:force_style='Alignment=5,MarginL=10,MarginV=40,FontSize=14,Outline=0,Fontname=Inter V'[t7]; \
-    [1:a]showwaves=s=160x60:mode=line:colors=white[waves]; \
+    [1:a]showwaves=s=160x60:mode=p2p:colors=white:draw=full[waves]; \
     [1:a]showvolume=w=300:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=2:m=p:c='0x80808080'[peakmeter]; \
     [1:a]showvolume=w=150:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=0:m=r:c='0xffffffff'[rmsmeter]; \
     [peakmeter]crop=iw:150:0:0[peakmeter]; \
