@@ -61,7 +61,7 @@ ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art
     [1:a]showvolume=w=300:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=2:m=p:c='0x80808080'[peakmeter]; \
     [1:a]showvolume=w=150:h=11:o=v:f=0:t=0:ds=log:v=0:dmc=0xffffffff:dm=0:m=r:c='0xffffffff'[rmsmeter]; \
     [peakmeter]crop=iw:150:0:0[peakmeter]; \
-    [t7][waves]overlay=10:H-h-160[t8]; \
+    [t7][waves]overlay=10:H-h-165[t8]; \
     [t8][peakmeter]overlay=10:H-h-10[t9]; \
     [t9][rmsmeter]overlay=10:H-h-10[t10]; \
     [4:v]scale=29x155[measurements]; \
