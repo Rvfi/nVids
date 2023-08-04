@@ -3,8 +3,6 @@ import os
 import subprocess
 from discord.ext import commands
 from dotenv import load_dotenv
-import yt_dlp  # Import the yt-dlp library
-
 load_dotenv()  
 intents = discord.Intents.default()
 intents.message_content = True  
@@ -45,22 +43,6 @@ async def on_message(message):
                 print("Deleting files.")
                 os.remove(attachment.filename)
                 os.remove("output.mp4")
-
-    # Check if the message is a link to an Instagram reel
-    elif 'https://www.instagram.com/reel/' in message.content:
-        print("Processing Instagram reel.")
-        async with message.channel.typing():
-            # Use yt-dlp to download the video
-            with yt_dlp.YoutubeDL({'outtmpl': 'reel.mp4'}) as ydl:
-                ydl.download([message.content])
-
-            # Send the downloaded video back to the chat
-            print("Sending Instagram reel.")
-            await message.channel.send(file=discord.File('reel.mp4'))
-
-            # Delete the video after sending it
-            print("Deleting reel.")
-            os.remove('reel.mp4')
 
 
 bot.run(os.getenv('TOKEN'))
