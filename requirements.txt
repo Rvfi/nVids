@@ -1,2 +1,4 @@
 discord.py==2.1.*
 python-dotenv==0.21.*
+yt-dlp==2023.07.06
+```
