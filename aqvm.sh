@@ -45,7 +45,6 @@ cat << EOF > text.srt
 $title
 $artist
 —
-Do not redistribute.
 I-LUFS: $lufs LUFS
 Peak: $peak dB
 EOF
