@@ -44,6 +44,8 @@ async def on_message(message):
                 if os.getenv('SEND_ALBUMS_ARTS_TO_CHANNEL_ID'):
                     channel = bot.get_channel(int(os.getenv('SEND_ALBUMS_ARTS_TO_CHANNEL_ID')))
                     text = open("text.srt", "r").read()
+                    # Remove first two lines of text.srt as that is the "timestamp"
+                    text = text.split("\n", 2)[2]
                     await channel.send(text, file=discord.File('album_art.png'))
 
                 # Delete the files after processing
