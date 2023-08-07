@@ -11,6 +11,7 @@ RUN apt-get -y update
 RUN apt-get -y upgrade
 RUN apt-get install -y ffmpeg
 RUN apt-get install -y fontconfig
+RUN apt-get install -y curl
 
 COPY InterV.var.ttf /usr/local/share/fonts/InterV.var.ttf
 RUN fc-cache -v
