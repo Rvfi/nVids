@@ -34,16 +34,20 @@ if [ ! -f album_art.png ]; then
 
     # Optionally use DALL-E
     if [ "$use_image_generation" = "--use-img-generation" ]; then
-        echo "DALL-E Prompt: $title"
+
+        # Sanitize it because it's going to be used in a JSON string
+        title_sanitized=$(echo "$title" | sed 's/[!@#\$%^&*()]//g')
+
+        echo "DALL-E Prompt: $title_sanitized"
 
         imageResponse=$(curl -s https://api.openai.com/v1/images/generations \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $OPENAI_API_KEY" \
-        -d '{
-            "prompt": "$title",
-            "n": 1,
-            "size": "256x256"
-        }')
+        -d "{ 
+            \"prompt\": \"$title_sanitized\", 
+            \"n\": 1, 
+            \"size\": \"256x256\" 
+        }")
 
         # "Parse" JSON
         imageUrl=$(echo "$imageResponse" | awk '/"url":/ {print}' | cut -d\" -f4)
