@@ -5,13 +5,14 @@ if ! command -v ffmpeg &> /dev/null || ! command -v ffprobe &> /dev/null; then
     exit
 fi
 
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 [audio_file] [logo_image]"
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 [audio_file] [logo_image] [--use_img_generation]"
     exit
 fi
 
 audio_file="$1"
 logo_image="$2"
+use_image_generation="$3"
 output_file="output.mp4"
 
 title=$(ffprobe -loglevel error -show_entries format_tags=title -of default=nw=1:nk=1 "$audio_file")
@@ -26,9 +27,30 @@ fi
 # Extract album art from the audio file
 ffmpeg -i "$audio_file" -an -c:v png album_art.png
 
-# Check if album art extraction was successful, if not use a default image
+# Check if album art extraction was successful
 if [ ! -f album_art.png ]; then
+    # Copy gradient.png for a blank background
     cp gradient.png album_art.png
+
+    # Optionally use DALL-E
+    if [ "$use_image_generation" = "--use-img-generation" ]; then
+        echo "DALL-E Prompt: $title"
+
+        imageResponse=$(curl -s https://api.openai.com/v1/images/generations \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $OPENAI_API_KEY" \
+        -d '{
+            "prompt": "$title",
+            "n": 1,
+            "size": "256x256"
+        }')
+
+        # "Parse" JSON
+        imageUrl=$(echo "$imageResponse" | awk '/"url":/ {print}' | cut -d\" -f4)
+
+        # Download the image
+        curl -s $imageUrl -o album_art.png
+    fi
 fi
 
 # Calculate Integrated Loudness and Peak dB

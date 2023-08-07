@@ -30,9 +30,9 @@ async def on_message(message):
                 await attachment.save(attachment.filename)
                 
                 # Execute the script
-                cmd = f"./aqvm.sh {attachment.filename} LogoMarkWhite.png"
+                cmd = f"./aqvm.sh {attachment.filename} LogoMarkWhite.png --use-img-generation"
                 print(f"Running command: {cmd}")
-                process = subprocess.Popen(cmd, shell=True)
+                process = subprocess.Popen(cmd, shell=True, env={"OPENAI_API_KEY": os.getenv('OPENAI_API_KEY')})
                 process.wait()
 
                 # Sends the output video back into the chat
