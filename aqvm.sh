@@ -5,29 +5,52 @@ if ! command -v ffmpeg &> /dev/null || ! command -v ffprobe &> /dev/null; then
     exit
 fi
 
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 [audio_file] [logo_image]"
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 [audio_file] [logo_image] [--use_img_generation] [--dont-remove-files]"
     exit
 fi
 
 audio_file="$1"
 logo_image="$2"
+use_image_generation="$3"
 output_file="output.mp4"
 
 title=$(ffprobe -loglevel error -show_entries format_tags=title -of default=nw=1:nk=1 "$audio_file")
 artist=$(ffprobe -loglevel error -show_entries format_tags=artist -of default=nw=1:nk=1 "$audio_file")
 
 # If title is empty, use filename (without extension) as title
+# Use bash string manipulation to remove extension
 if [ -z "$title" ]; then
-    title=$(basename "$audio_file")
+    title="${audio_file%.*}"
 fi
 
 # Extract album art from the audio file
 ffmpeg -i "$audio_file" -an -c:v png album_art.png
 
-# Check if album art extraction was successful, if not use a default image
+# Check if album art extraction was successful
 if [ ! -f album_art.png ]; then
+    # Copy gradient.png for a blank background
     cp gradient.png album_art.png
+
+    # Optionally use DALL-E
+    if [ "$use_image_generation" = "--use-img-generation" ]; then
+        echo "DALL-E Prompt: $title"
+
+        imageResponse=$(curl -s https://api.openai.com/v1/images/generations \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer $OPENAI_API_KEY" \
+        -d '{
+            "prompt": "$title",
+            "n": 1,
+            "size": "256x256"
+        }')
+
+        # "Parse" JSON
+        imageUrl=$(echo "$imageResponse" | awk '/"url":/ {print}' | cut -d\" -f4)
+
+        # Download the image
+        curl -s $imageUrl -o album_art.png
+    fi
 fi
 
 # Calculate Integrated Loudness and Peak dB
@@ -69,5 +92,7 @@ ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art
 
 
     
-# Cleanup the text files
-rm lufs.txt peak.txt album_art.png text.srt
+# Cleanup files (unless specified)
+if [ "$4" != "--dont-remove-files" ]; then
+    rm lufs.txt peak.txt text.srt album_art.png
+fi
