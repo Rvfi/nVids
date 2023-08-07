@@ -30,7 +30,7 @@ async def on_message(message):
                 await attachment.save(attachment.filename)
                 
                 # Execute the script
-                cmd = f"./aqvm.sh {attachment.filename} LogoMarkWhite.png --use-img-generation"
+                cmd = f"./aqvm.sh {attachment.filename} LogoMarkWhite.png --use-img-generation --dont-remove-files"
                 print(f"Running command: {cmd}")
                 process = subprocess.Popen(cmd, shell=True, env={"OPENAI_API_KEY": os.getenv('OPENAI_API_KEY')})
                 process.wait()
@@ -39,10 +39,21 @@ async def on_message(message):
                 print("Sending output video.")
                 await message.channel.send(file=discord.File('output.mp4'))
 
+                # If SEND_ALBUMS_ARTS_TO_CHANNEL_ID env is set, send the album art to the specified channel
+                # Read text from text.srt file also
+                if os.getenv('SEND_ALBUMS_ARTS_TO_CHANNEL_ID'):
+                    channel = bot.get_channel(int(os.getenv('SEND_ALBUMS_ARTS_TO_CHANNEL_ID')))
+                    text = open("text.srt", "r").read()
+                    await channel.send(text, file=discord.File('album_art.png'))
+
                 # Delete the files after processing
                 print("Deleting files.")
                 os.remove(attachment.filename)
                 os.remove("output.mp4")
 
+                # Since we told aqvm.sh not to remove the files, we have to do it manually
+                filesToRemove = ["lufs.txt", "peak.txt", "text.srt", "album_art.png"]
+                for file in filesToRemove:
+                    os.remove(file)
 
 bot.run(os.getenv('TOKEN'))

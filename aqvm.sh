@@ -6,7 +6,7 @@ if ! command -v ffmpeg &> /dev/null || ! command -v ffprobe &> /dev/null; then
 fi
 
 if [ "$#" -lt 2 ]; then
-    echo "Usage: $0 [audio_file] [logo_image] [--use_img_generation]"
+    echo "Usage: $0 [audio_file] [logo_image] [--use_img_generation] [--dont-remove-files]"
     exit
 fi
 
@@ -92,5 +92,7 @@ ffmpeg -y -loop 1 -i "$logo_image" -i "$audio_file" -i gradient.png -i album_art
 
 
     
-# Cleanup the text files
-rm lufs.txt peak.txt album_art.png text.srt
+# Cleanup files (unless specified)
+if [ "$4" != "--dont-remove-files" ]; then
+    rm lufs.txt peak.txt text.srt album_art.png
+fi
