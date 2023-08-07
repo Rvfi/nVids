@@ -18,8 +18,9 @@ title=$(ffprobe -loglevel error -show_entries format_tags=title -of default=nw=1
 artist=$(ffprobe -loglevel error -show_entries format_tags=artist -of default=nw=1:nk=1 "$audio_file")
 
 # If title is empty, use filename (without extension) as title
+# Use bash string manipulation to remove extension
 if [ -z "$title" ]; then
-    title=$(basename "$audio_file")
+    title="${audio_file%.*}"
 fi
 
 # Extract album art from the audio file
