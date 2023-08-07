@@ -39,11 +39,11 @@ if [ ! -f album_art.png ]; then
         imageResponse=$(curl -s https://api.openai.com/v1/images/generations \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $OPENAI_API_KEY" \
-        -d '{
-            "prompt": "$title",
-            "n": 1,
-            "size": "256x256"
-        }')
+        -d "{ 
+            \"prompt\": \"$title\", 
+            \"n\": 1, 
+            \"size\": \"256x256\" 
+        }")
 
         # "Parse" JSON
         imageUrl=$(echo "$imageResponse" | awk '/"url":/ {print}' | cut -d\" -f4)
