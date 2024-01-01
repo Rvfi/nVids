@@ -49,6 +49,9 @@ if [ ! -f album_art.png ]; then
             \"size\": \"256x256\" 
         }")
 
+        # Use to debug any errors
+        echo $imageResponse
+
         # "Parse" JSON
         imageUrl=$(echo "$imageResponse" | awk '/"url":/ {print}' | cut -d\" -f4)
 
