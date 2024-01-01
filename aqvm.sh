@@ -44,10 +44,14 @@ if [ ! -f album_art.png ]; then
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $OPENAI_API_KEY" \
         -d "{ 
+            \"model\": \"dall-e-3\",
             \"prompt\": \"$title_sanitized\", 
             \"n\": 1, 
-            \"size\": \"256x256\" 
+            \"size\": \"1024x1024\" 
         }")
+
+        # Use to debug any errors
+        echo $imageResponse
 
         # "Parse" JSON
         imageUrl=$(echo "$imageResponse" | awk '/"url":/ {print}' | cut -d\" -f4)
