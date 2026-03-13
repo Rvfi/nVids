@@ -1,5 +1,5 @@
 #!/bin/bash
 
-docker build -t nvids:latest .
+docker build -t crcljrcs-vids:latest .
 
-docker save nvids:latest | gzip > nvids.tar
+docker save crcljrcs-vids:latest | gzip > crcljrcs-vids.tar
